@@ -19,6 +19,9 @@ import { VolumeForecastPanel } from "@/components/panels/volume-forecast-panel";
 import { ShortedStocksPanel } from "@/components/panels/shorted-stocks-panel";
 import { LiveDeviationPanel } from "@/components/panels/live-deviation-panel";
 import { PortfolioRiskPanel } from "@/components/panels/portfolio-risk-panel";
+import { BacktestPanel } from "@/components/panels/backtest-panel";
+import { SentimentPanel } from "@/components/panels/sentiment-panel";
+import { SectorRotationPanel } from "@/components/panels/sector-rotation-panel";
 import { NLQueryBar } from "@/components/nl-query-bar";
 import { ChatAnalyst } from "@/components/chat-analyst";
 import { CommandPalette } from "@/components/command-palette";
@@ -59,6 +62,17 @@ export default function Home() {
         {/* Portfolio Risk Analyzer */}
         <div className="grid grid-cols-12 gap-3 sm:gap-4">
           <PortfolioRiskPanel />
+        </div>
+
+        {/* Backtesting Engine */}
+        <div className="grid grid-cols-12 gap-3 sm:gap-4">
+          <BacktestPanel />
+        </div>
+
+        {/* Sentiment + Sector Rotation */}
+        <div className="grid grid-cols-12 gap-3 sm:gap-4">
+          <SentimentPanel />
+          <SectorRotationPanel />
         </div>
 
         {/* Stage 7: Multi-Asset Market Overview */}
@@ -114,7 +128,8 @@ export default function Home() {
             Stage 7: Multi-Asset (Stocks/ETFs/Crypto/Forex) •
             Stage 8: AI Briefing + Predictive Alerts •
             Stage 9: PWA •
-            Forecast: 12-Month Daily Range + Volume + Shorted Stocks + Live Deviation
+            Forecast: 12-Month Daily Range + Volume + Shorted Stocks + Live Deviation •
+            Backtesting + Sentiment + Sector Rotation + Portfolio Risk
           </p>
           <p className="mt-1 text-muted-foreground/70">
             Press ⌘K for command palette, ⌘J for NL query, ⌘↵ to run SQL.
