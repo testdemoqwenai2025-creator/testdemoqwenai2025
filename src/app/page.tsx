@@ -18,6 +18,7 @@ import { ForecastPanel } from "@/components/panels/forecast-panel";
 import { VolumeForecastPanel } from "@/components/panels/volume-forecast-panel";
 import { ShortedStocksPanel } from "@/components/panels/shorted-stocks-panel";
 import { LiveDeviationPanel } from "@/components/panels/live-deviation-panel";
+import { PortfolioRiskPanel } from "@/components/panels/portfolio-risk-panel";
 import { NLQueryBar } from "@/components/nl-query-bar";
 import { ChatAnalyst } from "@/components/chat-analyst";
 import { CommandPalette } from "@/components/command-palette";
@@ -53,6 +54,11 @@ export default function Home() {
         {/* Most Shorted Stocks */}
         <div className="grid grid-cols-12 gap-3 sm:gap-4">
           <ShortedStocksPanel />
+        </div>
+
+        {/* Portfolio Risk Analyzer */}
+        <div className="grid grid-cols-12 gap-3 sm:gap-4">
+          <PortfolioRiskPanel />
         </div>
 
         {/* Stage 7: Multi-Asset Market Overview */}

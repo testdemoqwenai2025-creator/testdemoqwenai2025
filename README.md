@@ -18,6 +18,24 @@ actually computes it.
 
 The app is a PWA — install it on your phone or desktop via your browser's "Install app" menu for offline access.
 
+### Always-Fresh Snapshot Endpoint
+
+**👉 [https://preview-0df067ab-7eb2-4044-8d35-2c2c5ce3c169.space-z.ai/api/snapshot](https://preview-0df067ab-7eb2-4044-8d35-2c2c5ce3c169.space-z.ai/api/snapshot)**
+
+This is the "sound endpoint" — a single API call that returns the complete market state with the latest data and most likely predictions. Hit it anytime, any day, and it reflects the most recent data available, including:
+
+- Market overview (index, return, breadth, 5-day and 20-day trends)
+- Top movers (gainers, losers, most active)
+- Sector performance
+- Volume anomalies
+- Most shorted stocks (top 5)
+- Live multi-asset quotes (stocks, ETFs, crypto, forex)
+- 5-day forecast summary for top 3 stocks
+- Live deviation status (normal/breakout/anomaly)
+- "What to Watch" actionable summary
+
+Add `?year=2008` to view a specific year. Default is the most recent year with data.
+
 ---
 
 ## ✨ Stage 1 Features
