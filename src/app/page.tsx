@@ -10,6 +10,7 @@ import { NoTradeDaysPanel } from "@/components/panels/notrade-days-panel";
 import { TreemapPanel } from "@/components/panels/treemap-panel";
 import { WatchlistPanel } from "@/components/panels/watchlist-panel";
 import { AlertsPanel } from "@/components/panels/alerts-panel";
+import { SqlEditorPanel } from "@/components/panels/sql-editor-panel";
 import { NLQueryBar } from "@/components/nl-query-bar";
 import { ChatAnalyst } from "@/components/chat-analyst";
 import { CommandPalette } from "@/components/command-palette";
@@ -49,7 +50,12 @@ export default function Home() {
           <ChatAnalyst />
         </div>
 
-        {/* Row 5: sector heatmap full width */}
+        {/* Row 5: SQL Query Editor (Stage 5 — Modern Data Stack) */}
+        <div className="grid grid-cols-12 gap-4">
+          <SqlEditorPanel />
+        </div>
+
+        {/* Row 6: sector heatmap full width */}
         <div className="grid grid-cols-12 gap-4">
           <SectorHeatmapPanel />
         </div>
@@ -60,7 +66,8 @@ export default function Home() {
           Every chart shows its Hadoop MapReduce lineage — click any badge to inspect the source. •
           Stage 3: Live feed (port 3003), Watchlists, Alerts •
           Stage 4: AI Chat Analyst •
-          Press ⌘K for command palette, ⌘J for NL query.
+          Stage 5: DuckDB SQL Editor — write ad-hoc queries against 9.4M rows •
+          Press ⌘K for command palette, ⌘J for NL query, ⌘↵ to run SQL.
         </div>
       </main>
 

@@ -75,3 +75,6 @@ skills/
 # Scaffold config (keep only what we use)
 Caddyfile
 .eslintrc.json
+data/nyse.duckdb
+data/*.duckdb
+tool-results/
