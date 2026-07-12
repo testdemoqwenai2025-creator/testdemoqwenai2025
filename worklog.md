@@ -346,3 +346,50 @@ Stage Summary:
 - Short interest proxy (top 15 most shorted)
 - Naked short pressure + phantom volume
 - Live deviation monitor
+
+---
+Task ID: snapshot-portfolio-risk
+Agent: main
+Task: Sound endpoint (snapshot) + Portfolio Risk Analyzer (next idea)
+
+Work Log:
+- Built /api/snapshot — THE "sound endpoint":
+  - Single API call returns complete market state with latest data + predictions
+  - Always fresh — reflects most recent data available
+  - 8 sections: market overview, top movers, sectors, volume anomalies,
+    most shorted stocks, live multi-asset quotes, 5-day forecasts for top 3,
+    live deviation status, "What to Watch" summary
+  - Documented in README.md as the always-fresh endpoint
+  - Verified: returns full 2008 data (market -36.5%, gainers/losers/active,
+    shorted stocks, GE/BAC/F forecasts with live deviation status)
+
+- Built Portfolio Risk Analyzer (/api/portfolio-risk POST):
+  - Institutional-grade risk metrics:
+    - VaR (historical method): 1-day/10-day, 95%/99%
+    - Expected Shortfall (CVaR)
+    - Sharpe ratio (return - 2% risk-free / annualized vol)
+    - Sortino ratio (downside deviation only)
+    - Maximum drawdown + duration
+    - Beta vs composite index
+    - Correlation matrix (Pearson)
+  - Risk interpretation: risk level, risk-adjusted return, diversification
+  - Verified GE+F+BAC (2008): -58.67% return, 72.8% vol, Sharpe -0.83,
+    max drawdown -71.5%, 1-day 95% VaR 6.04%, beta 1.21
+  - Correlation: GE-BAC 0.70, GE-F 0.46, F-BAC 0.55
+
+- Built PortfolioRiskPanel UI:
+  - Holdings input (add/remove, ticker + weight)
+  - Summary banner (risk level, return quality, diversification)
+  - Metrics grid (returns, vol, beta, Sharpe, Sortino)
+  - Max drawdown card
+  - VaR table + Expected Shortfall
+  - Correlation matrix with color-coded values
+  - Methodology footer
+
+- Updated README.md with snapshot endpoint documentation
+- Committed (80df7e2) and pushed to GitHub
+
+Stage Summary:
+- Snapshot endpoint: always-fresh, comprehensive, single-call market state
+- Portfolio risk analyzer: VaR, Sharpe, Sortino, drawdown, beta, correlation
+- 2 new API routes, 1 new component, 1 new lib
