@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { LineageBadge } from "@/components/lineage-badge";
+import { Sparkline } from "@/components/sparkline";
 import { useYearStore } from "@/hooks/use-year-store";
 import { useSelectedTicker } from "@/hooks/use-selected-ticker";
 import { ArrowUp, ArrowDown, Activity } from "lucide-react";
@@ -42,13 +43,29 @@ export function TopMoversPanel() {
   const year = useYearStore((s) => s.year);
   const [data, setData] = useState<Response | null>(null);
   const [loading, setLoading] = useState(true);
+  const [sparklines, setSparklines] = useState<Record<string, number[]>>({});
   const selectTicker = useSelectedTicker((s) => s.select);
 
   useEffect(() => {
     setLoading(true);
+    setSparklines({});
     fetch(`/api/top-movers?year=${year}`)
       .then((r) => r.json())
-      .then((d) => setData(d))
+      .then((d) => {
+        setData(d);
+        // Fetch sparklines for all movers in one batch
+        const allTickers = [
+          ...d.data.gainers.map((m) => m.ticker),
+          ...d.data.losers.map((m) => m.ticker),
+          ...d.data.active.map((m) => m.ticker),
+        ];
+        const unique = Array.from(new Set(allTickers));
+        return fetch("/api/sparklines", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ tickers: unique, year, points: 30 }),
+        }).then((r) => r.json()).then((sp) => setSparklines(sp.sparklines ?? {}));
+      })
       .finally(() => setLoading(false));
   }, [year]);
 
@@ -90,40 +107,51 @@ export function TopMoversPanel() {
                       Loading…
                     </div>
                   )}
-                  {!loading && data?.data[kind].map((m, i) => (
-                    <button
-                      key={m.ticker}
-                      onClick={() => selectTicker(m.ticker)}
-                      className="w-full flex items-center justify-between gap-2 px-2 py-1.5 rounded hover:bg-accent transition-colors text-left"
-                    >
-                      <div className="flex items-center gap-2 min-w-0">
-                        <span className="text-[10px] text-muted-foreground w-4 text-right">
-                          {i + 1}
-                        </span>
-                        <span className="font-mono font-bold text-sm w-12">
-                          {m.ticker}
-                        </span>
-                        <span className="text-xs text-muted-foreground truncate">
-                          ${m.last_close.toFixed(2)}
-                        </span>
-                      </div>
-                      <div className="flex items-center gap-3 text-xs">
-                        {kind === "active" ? (
-                          <span className="font-mono text-muted-foreground">
-                            {formatVolume(m.total_volume)}
+                  {!loading && data?.data[kind].map((m, i) => {
+                    const spark = sparklines[m.ticker];
+                    return (
+                      <button
+                        key={m.ticker}
+                        onClick={() => selectTicker(m.ticker)}
+                        className="w-full flex items-center justify-between gap-2 px-2 py-1.5 rounded hover:bg-accent transition-colors text-left"
+                      >
+                        <div className="flex items-center gap-2 min-w-0">
+                          <span className="text-[10px] text-muted-foreground w-4 text-right">
+                            {i + 1}
                           </span>
-                        ) : null}
-                        <span
-                          className={`font-mono font-semibold ${
-                            m.return_pct >= 0 ? "text-up" : "text-down"
-                          }`}
-                        >
-                          {m.return_pct >= 0 ? "+" : ""}
-                          {m.return_pct.toFixed(1)}%
-                        </span>
-                      </div>
-                    </button>
-                  ))}
+                          <span className="font-mono font-bold text-sm w-12">
+                            {m.ticker}
+                          </span>
+                          <span className="text-xs text-muted-foreground truncate">
+                            ${m.last_close.toFixed(2)}
+                          </span>
+                        </div>
+                        <div className="flex items-center gap-2 text-xs">
+                          {spark && spark.length > 1 && (
+                            <Sparkline
+                              data={spark}
+                              width={60}
+                              height={20}
+                              positive={m.return_pct >= 0}
+                            />
+                          )}
+                          {kind === "active" ? (
+                            <span className="font-mono text-muted-foreground w-12 text-right">
+                              {formatVolume(m.total_volume)}
+                            </span>
+                          ) : null}
+                          <span
+                            className={`font-mono font-semibold w-14 text-right ${
+                              m.return_pct >= 0 ? "text-up" : "text-down"
+                            }`}
+                          >
+                            {m.return_pct >= 0 ? "+" : ""}
+                            {m.return_pct.toFixed(1)}%
+                          </span>
+                        </div>
+                      </button>
+                    );
+                  })}
                 </div>
               </ScrollArea>
             </TabsContent>
