@@ -62,7 +62,6 @@ examples/
 upload/
 
 # Mini-services (cloned from scaffold)
-mini-services/
 
 # Bun
 bun.lockb
