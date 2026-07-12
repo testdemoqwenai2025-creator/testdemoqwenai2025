@@ -12,6 +12,14 @@ actually computes it.
 
 ---
 
+## 🔗 Live Preview
+
+**👉 [https://preview-0df067ab-7eb2-4044-8d35-2c2c5ce3c169.space-z.ai/](https://preview-0df067ab-7eb2-4044-8d35-2c2c5ce3c169.space-z.ai/)**
+
+The app is a PWA — install it on your phone or desktop via your browser's "Install app" menu for offline access.
+
+---
+
 ## ✨ Stage 1 Features
 
 ### 1. Pipeline Explorer (Feature 1)

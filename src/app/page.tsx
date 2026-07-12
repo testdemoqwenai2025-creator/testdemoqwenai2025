@@ -14,6 +14,7 @@ import { SqlEditorPanel } from "@/components/panels/sql-editor-panel";
 import { MultiAssetPanel } from "@/components/panels/multi-asset-panel";
 import { BriefingPanel } from "@/components/panels/briefing-panel";
 import { PredictiveAlertsPanel } from "@/components/panels/predictive-alerts-panel";
+import { ForecastPanel } from "@/components/panels/forecast-panel";
 import { NLQueryBar } from "@/components/nl-query-bar";
 import { ChatAnalyst } from "@/components/chat-analyst";
 import { CommandPalette } from "@/components/command-palette";
@@ -33,6 +34,11 @@ export default function Home() {
         <div className="grid grid-cols-12 gap-3 sm:gap-4">
           <BriefingPanel />
           <PredictiveAlertsPanel />
+        </div>
+
+        {/* Daily Range Forecast — 12 month outlook for day traders */}
+        <div className="grid grid-cols-12 gap-3 sm:gap-4">
+          <ForecastPanel />
         </div>
 
         {/* Stage 7: Multi-Asset Market Overview */}
@@ -87,7 +93,8 @@ export default function Home() {
             Stage 6: Real Market Data Adapter •
             Stage 7: Multi-Asset (Stocks/ETFs/Crypto/Forex) •
             Stage 8: AI Briefing + Predictive Alerts •
-            Stage 9: PWA
+            Stage 9: PWA •
+            Forecast: 12-Month Daily Range Column
           </p>
           <p className="mt-1 text-muted-foreground/70">
             Press ⌘K for command palette, ⌘J for NL query, ⌘↵ to run SQL.
