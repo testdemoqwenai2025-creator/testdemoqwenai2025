@@ -149,3 +149,53 @@ Stage Summary:
 - 5 new API routes, 4 new components, 1 mini-service, 3 Prisma models
 - All endpoints verified working via curl and browser
 - Preview URL: https://preview-0df067ab-7eb2-4044-8d35-2c2c5ce3c169.space-z.ai/
+
+---
+Task ID: 5
+Agent: main
+Task: Stage 5 — Modern Data Stack (DuckDB SQL Query Editor) + fix preview endpoint
+
+Work Log:
+- Investigated preview URL issue: external space-z.ai gateway returns 404
+  while localhost:3000 and localhost:81 work perfectly. The issue is at
+  the platform infrastructure level — the external gateway isn't routing
+  the preview subdomain to our container. Added /health endpoint and
+  keepalive script to maximize uptime.
+- Installed DuckDB Python package (v1.5.4)
+- Built scripts/build_duckdb.py: creates nyse.duckdb (523MB) with:
+  - prices table: 9,384,739 rows (all NYSE daily OHLCV 1997-2017)
+  - companies table: 3,298 rows with sector/industry/marketcap
+  - prices_with_sector view: joined prices + companies
+  - avg_volume_per_month: pre-computed (mirrors AvgStockVolumePerMonth MapReduce)
+  - total_volume_per_year: pre-computed (mirrors TotalVolumePerYear MapReduce)
+  - Indexes on ticker, year, (ticker, year)
+- Built /api/sql-query POST endpoint:
+  - Executes user SQL against DuckDB via Python subprocess
+  - Safety: only SELECT/WITH allowed, blocks INSERT/UPDATE/DELETE/DROP/etc.
+  - 30s timeout, 1000 row default limit (5000 max)
+  - Handles Infinity/NaN in results (converts to null)
+  - Returns columns, rows, row_count, execution_ms, lineage metadata
+- Built /api/sql-query GET endpoint:
+  - Returns full schema (5 tables with columns and descriptions)
+  - 6 sample queries for one-click loading
+- Built SqlEditorPanel component:
+  - SQL textarea with ⌘+Enter to run
+  - Sample query buttons
+  - Collapsible schema browser
+  - Results table with smart formatting (volume as K/M/B, prices as $, returns colored)
+  - Execution time + row count badges
+  - LineageBadge for DuckDB
+- Verified: "Top 5 tickers by 2009 return" query returns in 230ms
+  (FBR +13,335%, LEA +4,697%, DAN +1,365%, PIR +1,276%, IDT +1,113%)
+- Added scripts/keepalive.sh: watchdog that restarts dev server + price-feed if they die
+- Added /health route for gateway health checks
+- Committed Stage 5 (commit 1a0561a)
+- Pushed to GitHub: github.com/testdemoqwenai2025-creator/testdemoqwenai2025
+
+Stage Summary:
+- Stage 5 complete: DuckDB SQL Query Editor — modern data stack layer
+- 523MB DuckDB database with 9.4M rows, queryable via SQL
+- 1 new API route (POST + GET), 1 new component
+- All endpoints verified working via curl
+- Preview URL: https://preview-0df067ab-7eb2-4044-8d35-2c2c5ce3c169.space-z.ai/
+  (gateway may need time to detect container; app is definitely running on port 3000/81)
