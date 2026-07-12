@@ -253,3 +253,44 @@ Stage Summary:
 - Multi-asset support (stocks, ETFs, crypto, forex)
 - AI-powered daily briefing + predictive alerts
 - Total: 20+ API endpoints, 15+ UI panels, 5 MapReduce jobs reproduced
+
+---
+Task ID: forecast
+Agent: main
+Task: Add preview endpoint docs + 12-month daily range forecast feature (user's design idea)
+
+Work Log:
+- Added preview endpoint documentation:
+  - Updated README.md with Live Preview section at the top
+  - Created PREVIEW.md with URL, access instructions, PWA guide, troubleshooting
+  - Preview URL: https://preview-0df067ab-7eb2-4044-8d35-2c2c5ce3c169.space-z.ai/
+- Built statistical forecaster (src/lib/forecaster.ts):
+  - 5-component methodology: volatility, avg range, day-of-week seasonality, trend, outlier exclusion
+  - Outlier exclusion: days with |return| > 3σ removed as "significant news" days
+  - Geometric trend projection (log-return based, can't go negative)
+  - Horizon widening: uncertainty grows ~15% over 12 months
+  - Day-of-week seasonality: Mondays more volatile, etc.
+- Built /api/forecast?ticker=GE&months=12 endpoint
+- Built ForecastPanel component:
+  - Daily/Weekly view toggle
+  - 6 summary stats: baseline, 12mo target, range, avg range, confidence, trend
+  - Volatility regime badge, outlier count
+  - Daily table with visual range bar per day
+  - Weekly summary aggregation
+  - Warnings about "no significant news" caveat
+  - Methodology footer
+- Verified for 4 tickers:
+  - GE: $31.27 → $50.42 (+36.8%/yr), 1.34%/day, 74% confidence, low vol
+  - F:  $12.61 → $17.71 (+26.1%/yr), 2.15%/day, 31% confidence, normal vol
+  - BAC: $22.05 → $99.90 (+116.2%/yr), 2.25%/day, 48% confidence, normal vol
+  - JPM: $83.55 → $241.29 (+81.6%/yr), 1.65%/day, 55% confidence, normal vol
+- Fixed trend projection bug: was using linear regression (could go negative),
+  switched to geometric log-return drift
+- Committed (5d9e09a) and pushed to GitHub
+
+Stage Summary:
+- Forecast feature complete: 12-month daily range column for day traders
+- Explicitly a "no significant news" baseline — when actual breaks the range,
+  it signals a material event
+- 1 new API route, 1 new component, 1 new lib
+- Preview endpoint documented in README and PREVIEW.md
