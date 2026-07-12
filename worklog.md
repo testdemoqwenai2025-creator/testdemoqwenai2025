@@ -393,3 +393,42 @@ Stage Summary:
 - Snapshot endpoint: always-fresh, comprehensive, single-call market state
 - Portfolio risk analyzer: VaR, Sharpe, Sortino, drawdown, beta, correlation
 - 2 new API routes, 1 new component, 1 new lib
+
+---
+Task ID: backtest-sentiment-rotation
+Agent: main
+Task: Backtesting engine + market sentiment (Fear & Greed) + sector rotation signals
+
+Work Log:
+- Built backtester.ts with 5 strategies:
+  1. SMA Crossover (fast/slow periods configurable)
+  2. Momentum (lookback + threshold)
+  3. Mean Reversion (Bollinger Bands with period + multiplier)
+  4. Breakout (N-day high/low)
+  5. RSI (oversold/overbought thresholds)
+  - Computes: total return, alpha vs buy-and-hold, Sharpe, max drawdown,
+    win rate, profit factor, equity curve, trade list with entry/exit/reason
+  - Verified SMA crossover GE 2008: -27.5% vs -56.3% buy-and-hold (alpha +28.8%)
+
+- Built sentiment.ts (Fear & Greed Index):
+  - 6 weighted indicators: momentum, volatility, breadth, price trend,
+    safe haven demand, volume sentiment
+  - Score 0-100: Extreme Fear / Fear / Neutral / Greed / Extreme Greed
+  - Verified 2008: score 31 (Fear) — money in safe havens, volume in losers
+  - Verified 2009: score 52 (Neutral) — market recovering
+
+- Built sector-rotation.ts:
+  - Per-sector momentum score + INFLOW/OUTFLOW/NEUTRAL signals
+  - Phase detection: RISK_ON / RISK_OFF / TRANSITIONING
+  - Top 3 inflow + outflow sectors
+  - Verified 2008: TRANSITIONING phase, Consumer Non-Durables + Health Care inflow
+
+- Built 3 API routes: /api/backtest, /api/sentiment, /api/sector-rotation
+- Built 3 UI panels: BacktestPanel, SentimentPanel, SectorRotationPanel
+- Committed (7116908) and pushed to GitHub
+
+Stage Summary:
+- 3 new analytical features complete
+- Backtesting: 5 strategies with full performance metrics
+- Sentiment: 6-indicator Fear & Greed composite
+- Sector rotation: institutional money-flow tracking
