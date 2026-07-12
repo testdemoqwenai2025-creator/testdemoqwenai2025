@@ -52,3 +52,47 @@ Stage Summary:
 - Year selector with historical context (e.g. 2008 → "Global financial crisis")
 - Dark trading-desk theme with tabular numerals, custom scrollbars, grid background
 - Dev server running on port 3000, all endpoints verified
+
+---
+Task ID: 2
+Agent: main
+Task: Stage 2 — NL query bar, treemap, sparklines, enhanced command palette + GitHub push prep
+
+Work Log:
+- Created README.md with full architecture, getting started, project structure, MapReduce→pandas mapping, and roadmap
+- Created SKILL.md documenting patterns: lineage system, time-machine pattern, dark theme tokens, Recharts patterns, memory constraints, common pitfalls
+- Created .gitignore excluding node_modules, .next, data/processed (985MB), repo/, code_repo/, skills/, download/, scaffold files
+- Initialized git, staged 97 source files, committed Stage 1 (commit 01fad07)
+- Built Feature 4 — NL Query Bar:
+  - New API route /api/nl-query (POST) using z-ai-web-dev-sdk (ZAI.create() → chat.completions.create)
+  - System prompt translates NL → JSON filter spec (sector, min_return_pct, min_volume, sort_by, etc.)
+  - Fallback keyword parser if LLM unavailable (detects "tech"/"energy"/"finance" sectors, "doubled"/"tripled", "biggest losers", volume regex)
+  - Applies filter against top_movers data (gainers+losers+active pool, deduped by ticker)
+  - Returns results with filter explanation + used_llm flag
+  - NLQueryBar component: ⌘J shortcut, suggestions dropdown, results panel with sparkline-ready rows
+- Built Feature 5a — Market Treemap:
+  - New API route /api/treemap (GET) — returns nested sector→industry→ticker tree
+  - TreemapPanel with Recharts Treemap, custom content renderer
+  - Sized by total_volume, colored by return_pct (diverging red→green)
+  - Click any leaf cell → opens StockDetailDrawer
+- Built Feature 5b — Sparklines:
+  - New API route /api/sparklines (POST) — batch fetch, samples to N points
+  - Sparkline component (pure SVG, memoized, no Recharts overhead)
+  - Integrated into TopMoversPanel — batch fetches sparklines for all 30 movers in one request
+- Built Feature 5c — Enhanced Command Palette:
+  - Ticker search (debounced, 5 results)
+  - Quick year jump (2008/2000/2009/1997/2017 with context labels)
+  - All years (1997–2017)
+  - Pipeline jobs (7 jobs)
+  - All in one ⌘K palette
+- Verified all endpoints via curl: /api/treemap 200, /api/sparklines 200, /api/nl-query 200 (LLM-parsed, 1036ms)
+- Verified via agent-browser: NL query bar accepts input, returns results (20 of 29 matches, LLM-parsed), treemap renders 66 SVG rects, 10 sparklines visible in Top Movers
+- Committed Stage 2 (commit e642b7c)
+- Added GitHub remote (origin → github.com/dgadiraju/nyse-terminal.git) but push failed — no GITHUB_TOKEN/GH_TOKEN available in sandbox
+
+Stage Summary:
+- Stage 2 features complete: NL query bar (LLM-powered), market treemap, sparklines, enhanced command palette
+- 3 new API routes, 3 new components, 1 enhanced component
+- ZAI SDK integration working server-side for NL→filter translation
+- Git repo has 2 commits (Stage 1 + Stage 2), ready to push when credentials available
+- User needs to either: provide a GitHub PAT, or push manually using the prepared repo
